@@ -36,3 +36,7 @@ include/openrave/latex/
 build/
 
 sympy/
+
+python/tgn_ikfast\.py
+
+python/tgn_inversekinematics\.py

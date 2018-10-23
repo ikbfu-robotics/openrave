@@ -165,6 +165,36 @@ try:
 except:
     import pickle
 
+# ========== TGN's tools for studying how IKFast works ==========
+import logging, traceback
+def ikfast_print_stack():
+    tb = traceback.extract_stack()
+    pattern = '%-30s %5s %24s' 
+    print( '\n'+pattern % ('        FUNCTION','LINE', 'FILE      '))
+    keyword_of_interest = [ '__init__.py', 'ikfast.py', 'inversekinematics.py']
+    print('--------------------------------------------------------------')
+    for function_call in tb:
+        for keyword in keyword_of_interest:
+            if (keyword in function_call[0]) and (function_call[2] not in 'ikfast_print_stack'):
+                print(pattern % (function_call[2], function_call[1], keyword))
+                break
+ipython_str = 'ikfast_print_stack(); ' + \
+              'from IPython.terminal import embed; ' + \
+              'ipshell = embed.InteractiveShellEmbed(banner1="", config=embed.load_default_config())(local_ns=locals())'
+            
+LOGGING_FORMAT = ' %(levelname)-6s [ LINE %(lineno)d : %(filename)s : %(funcName)s ]\n' + \
+                 '\t%(message)s\n'
+logging.basicConfig( format = LOGGING_FORMAT, \
+                     datefmt='%d-%m-%Y:%H:%M:%S', \
+                     level=logging.DEBUG)
+
+log = logging.getLogger('inversekinematics')
+hdlr = logging.FileHandler('/var/tmp/ikfast-inversekinematics.log')
+formatter = logging.Formatter(LOGGING_FORMAT)
+hdlr.setFormatter(formatter)
+log.addHandler(hdlr)
+# ========== End of TGN's tools  ==============    
+
 import logging
 log = logging.getLogger('openravepy.'+__name__.split('.',2)[-1])
 
